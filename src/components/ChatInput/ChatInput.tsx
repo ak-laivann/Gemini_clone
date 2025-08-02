@@ -1,10 +1,19 @@
+import { faker } from "@faker-js/faker";
 import { useState, useRef, ChangeEvent, FormEvent } from "react";
-import { Send, InsertPhotoOutlined } from "@mui/icons-material";
 import { useChatStore } from "../../store/chatStore";
 import TextareaAutosize from "react-textarea-autosize";
+import InsertPhotoOutlined from "@mui/icons-material/InsertPhotoOutlined";
+import Send from "@mui/icons-material/Send";
+import { Message } from "../MessageBubble";
 
-export const ChatInput = () => {
-  const addMessage = useChatStore((state) => state.addMessage);
+type ChatInputProps = {
+  onUserMessageSent?: (id: string | null) => void;
+};
+
+export const ChatInput = ({ onUserMessageSent }: ChatInputProps) => {
+  const { addMessage, createConversation, currentId, setCurrentId } =
+    useChatStore();
+
   const [message, setMessage] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -26,21 +35,30 @@ export const ChatInput = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-
     if (!message.trim() && images.length === 0) return;
 
-    console.log("Sending message:", message);
-    console.log("Sending images:", images);
-
-    addMessage({
+    const newMsg: Message = {
       id: Date.now().toString(),
-      role: "user",
+      role: "user" as const,
       text: message.trim() || undefined,
-      image: images.length > 0 ? JSON.stringify(images[0]) : undefined,
-    });
+      images:
+        images.length > 0
+          ? images.map((i) => URL.createObjectURL(i))
+          : undefined,
+    };
+
+    if (!currentId) {
+      const fakeTitle = faker.lorem.words({ min: 2, max: 4 });
+      let convId = createConversation(fakeTitle, newMsg);
+      setCurrentId(convId);
+    } else {
+      addMessage(currentId, newMsg);
+    }
 
     setMessage("");
     setImages([]);
+
+    onUserMessageSent?.(useChatStore.getState().currentId);
   };
 
   const removeImage = (index: number) => {
@@ -67,7 +85,7 @@ export const ChatInput = () => {
                 <button
                   type="button"
                   onClick={() => removeImage(index)}
-                  className="absolute top-0 right-0 bg-white rounded-full text-xs text-red-500 font-bold p-0.5 hidden group-hover:block"
+                  className="absolute top-0 right-0 w-5 h-5 bg-white rounded-full text-xs text-black-500 font-bold p-0.5 hidden group-hover:block flex items-center justify-center"
                 >
                   ✕
                 </button>
@@ -84,7 +102,6 @@ export const ChatInput = () => {
             minRows={1}
             maxRows={7}
             className="w-full resize-none outline-none px-3 py-2 text-sm text-gray-800 rounded-xl placeholder-gray-500 placeholder:font-semibold"
-            // className="w-full resize-none outline-none px-3 py-2 text-sm text-gray-800 rounded-xl"
           />
         </div>
 

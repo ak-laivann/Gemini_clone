@@ -5,7 +5,7 @@ export const Header = () => {
   const { isSignedIn, signIn, signOut } = useAuthStore();
 
   return (
-    <header className="mb-2 w-full px-4 py-3 bg-white flex justify-end items-center gap-4 shadow-sm">
+    <header className="sticky top-0 z-10 mb-2 w-full px-4 py-3 bg-white flex justify-end items-center gap-4">
       {isSignedIn ? (
         <button
           onClick={signOut}
