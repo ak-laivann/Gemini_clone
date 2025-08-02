@@ -1,11 +1,15 @@
-import { Sidebar } from "./components/Sidebar";
+import { Header, Sidebar } from "./components";
 import { ChatScreen } from "./layout/ChatScreen";
 
 export default function App() {
   return (
     <div className="flex h-screen">
       <Sidebar />
-      <ChatScreen />
+
+      <div className="flex flex-col flex-1">
+        <Header />
+        <ChatScreen />
+      </div>
     </div>
   );
 }

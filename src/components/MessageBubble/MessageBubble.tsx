@@ -5,19 +5,28 @@ export interface Message {
   image?: string;
 }
 
-// basic setup of message bubble component
-// todo: logic implementation -> user's messages on the right with water drop like background, assistant's on the left
 export const MessageBubble = ({ message }: { message: Message }) => {
   const isUser = message.role === "user";
 
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-      <div
-        className={`max-w-[70%] p-3 rounded-lg shadow ${
-          isUser ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
-        }`}
-      >
-        {message.text}
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-2`}>
+      <div className="relative max-w-[70%]">
+        <div
+          className={`p-3 rounded-xl shadow whitespace-pre-wrap ${
+            isUser
+              ? "bg-blue-500 text-white rounded-br-none"
+              : "bg-gray-200 text-black rounded-bl-none"
+          }`}
+        >
+          {message.text && <p className="text-sm">{message.text}</p>}
+          {message.image && (
+            <img
+              src={message.image}
+              alt="chat"
+              className="mt-2 rounded-lg max-w-full object-cover"
+            />
+          )}
+        </div>
       </div>
     </div>
   );

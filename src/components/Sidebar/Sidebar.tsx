@@ -1,9 +1,7 @@
 import "./Sidebar.css";
 import { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
-import SettingsIcon from "@mui/icons-material/Settings";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const conversations = [
@@ -51,14 +49,6 @@ export const Sidebar = () => {
             <MenuIcon fontSize="small" />
           </button>
         </Tooltip>
-
-        {isExpanded && (
-          <Tooltip text={"Search"} position="bottom">
-            <button className="btn-icon" aria-label="Search">
-              <SearchIcon fontSize="small" className="text-gray-700" />
-            </button>
-          </Tooltip>
-        )}
       </div>
 
       <div className="p-2">
@@ -96,15 +86,6 @@ export const Sidebar = () => {
             </Tooltip>
           ))}
         </ul>
-      </div>
-
-      <div className="p-2">
-        <Tooltip text={"Settings & Help"} position="right">
-          <button className="btn-rounded" aria-label="Settings and Help">
-            <SettingsIcon />
-            {isExpanded && <span>Settings & Help</span>}
-          </button>
-        </Tooltip>
       </div>
     </div>
   );
