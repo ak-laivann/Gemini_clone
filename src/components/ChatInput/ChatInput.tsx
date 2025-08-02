@@ -6,7 +6,9 @@ import InsertPhotoOutlined from "@mui/icons-material/InsertPhotoOutlined";
 import Send from "@mui/icons-material/Send";
 import Stop from "@mui/icons-material/StopCircleOutlined";
 import { Message } from "../MessageBubble";
-import { z } from "zod";
+import { set, z } from "zod";
+import { toast } from "react-toastify";
+import { Skeleton } from "antd";
 
 type ChatInputProps = {
   onUserMessageSent?: (id: string | null) => void;
@@ -35,6 +37,7 @@ export const ChatInput = ({
     useChatStore();
   const [message, setMessage] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
+  const [imagesLoading, setImagesLoading] = useState<boolean>(false);
   const [formError, setFormError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -50,9 +53,21 @@ export const ChatInput = ({
     const validImages = Array.from(files).filter((file) =>
       file.type.startsWith("image/")
     );
+    setImagesLoading(true);
+    toast.info("Uploading images... Please wait", {
+      autoClose: 1500,
+      position: "bottom-right",
+    });
 
-    setImages((prev) => [...prev, ...validImages]);
-    setFormError(null);
+    setTimeout(() => {
+      setImages((prev) => [...prev, ...validImages]);
+      setFormError(null);
+      setImagesLoading(false);
+      toast.success("Images uploaded successfully!", {
+        autoClose: 2000,
+        position: "bottom-right",
+      });
+    }, 3000);
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -104,6 +119,9 @@ export const ChatInput = ({
         onSubmit={handleSubmit}
         className="flex flex-col px-4 py-2 bg-white"
       >
+        {imagesLoading && (
+          <Skeleton.Avatar active shape="square" size={"large"} />
+        )}
         {images.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-2">
             {images.map((img, index) => (

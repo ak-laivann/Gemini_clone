@@ -6,6 +6,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useChatStore } from "../../store/chatStore";
+import { toast } from "react-toastify";
 
 export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -47,6 +48,10 @@ export const Sidebar = () => {
     if (editingId) {
       updateTitle(editingId, editedTitle);
       setEditingId(null);
+      toast.success(
+        `Conversation titled "${editedTitle}" - renamed successfully`,
+        { autoClose: 2000, position: "bottom-right" }
+      );
     }
   };
 
@@ -104,7 +109,9 @@ export const Sidebar = () => {
                   <input
                     className="w-full text-sm px-2 py-1 rounded"
                     value={editedTitle}
-                    onChange={(e) => setEditedTitle(e.target.value)}
+                    onChange={(e) => {
+                      setEditedTitle(e.target.value);
+                    }}
                     onBlur={saveEdit}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") saveEdit();
@@ -149,7 +156,10 @@ export const Sidebar = () => {
                         <button
                           onClick={() => {
                             deleteConversation(conv.id);
-                            setOpenMenuIndex(null);
+                            toast.warn(
+                              `Conversation titled ${conv.title} - deleted successfully`,
+                              { autoClose: 2000, position: "bottom-right" }
+                            );
                           }}
                           className="px-4 py-2 hover:bg-gray-100 text-left flex items-center gap-2 text-red-500"
                         >
