@@ -1,22 +1,35 @@
 import { faker } from "@faker-js/faker";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChatInput, ChatDisplay } from "../../components";
 import { useChatStore } from "../../store/chatStore";
 
 export const ChatScreen = () => {
   const { addMessage, conversations, currentId, updateTitle } = useChatStore();
   const [isThinking, setIsThinking] = useState(false);
-
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const currentConversation = conversations.find(
     (conv) => conv.id === currentId
   );
   const messages = currentConversation?.messages || [];
 
-  const handleAIResponse = (convId: string | null) => {
+  const handleAIResponse = (
+    convId: string | null,
+    returnNow: boolean = false
+  ) => {
+    if (returnNow) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+        setIsThinking(false);
+      }
+      return;
+    }
+
     if (!convId) return;
 
     setIsThinking(true);
-    setTimeout(() => {
+
+    timeoutRef.current = setTimeout(() => {
       const aiText = faker.lorem.sentences({ min: 1, max: 3 });
 
       const aiMessage = {
@@ -29,6 +42,7 @@ export const ChatScreen = () => {
       updateTitleIfFirstMessage(convId, aiText);
 
       setIsThinking(false);
+      timeoutRef.current = null;
     }, 5000);
   };
 
@@ -39,6 +53,14 @@ export const ChatScreen = () => {
       updateTitle(id, newTitle || "New Conversation");
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [currentId]);
 
   return (
     <div className="flex flex-col flex-1 h-full">
@@ -57,7 +79,11 @@ export const ChatScreen = () => {
           </div>
 
           <div className="sticky z-10 bottom-0 w-full max-w-3xl mx-auto px-4 md:px-8 pt-4 bg-white">
-            <ChatInput onUserMessageSent={handleAIResponse} />
+            <ChatInput
+              onUserMessageSent={handleAIResponse}
+              isAiTyping={isThinking}
+              onStop={() => handleAIResponse(null, true)}
+            />
           </div>
         </>
       )}

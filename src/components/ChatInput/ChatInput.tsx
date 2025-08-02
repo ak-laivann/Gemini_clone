@@ -4,22 +4,43 @@ import { useChatStore } from "../../store/chatStore";
 import TextareaAutosize from "react-textarea-autosize";
 import InsertPhotoOutlined from "@mui/icons-material/InsertPhotoOutlined";
 import Send from "@mui/icons-material/Send";
+import Stop from "@mui/icons-material/StopCircleOutlined";
 import { Message } from "../MessageBubble";
+import { z } from "zod";
 
 type ChatInputProps = {
   onUserMessageSent?: (id: string | null) => void;
+  isAiTyping?: boolean;
+  onStop?: () => void;
 };
 
-export const ChatInput = ({ onUserMessageSent }: ChatInputProps) => {
+const messageSchema = z
+  .object({
+    text: z.string().optional(),
+    images: z.array(z.instanceof(File)).optional(),
+  })
+  .refine(
+    (data) =>
+      (data.text && data.text.trim() !== "") ||
+      (data.images && data.images.length > 0),
+    { message: "Please enter a message or upload an image." }
+  );
+
+export const ChatInput = ({
+  onUserMessageSent,
+  isAiTyping = false,
+  onStop,
+}: ChatInputProps) => {
   const { addMessage, createConversation, currentId, setCurrentId } =
     useChatStore();
-
   const [message, setMessage] = useState<string>("");
   const [images, setImages] = useState<File[]>([]);
+  const [formError, setFormError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value);
+    setFormError(null);
   };
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -31,15 +52,25 @@ export const ChatInput = ({ onUserMessageSent }: ChatInputProps) => {
     );
 
     setImages((prev) => [...prev, ...validImages]);
+    setFormError(null);
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!message.trim() && images.length === 0) return;
+
+    const validation = messageSchema.safeParse({
+      text: message,
+      images,
+    });
+
+    if (!validation.success) {
+      setFormError(validation.error.issues[0].message);
+      return;
+    }
 
     const newMsg: Message = {
       id: Date.now().toString(),
-      role: "user" as const,
+      role: "user",
       text: message.trim() || undefined,
       images:
         images.length > 0
@@ -49,7 +80,7 @@ export const ChatInput = ({ onUserMessageSent }: ChatInputProps) => {
 
     if (!currentId) {
       const fakeTitle = faker.lorem.words({ min: 2, max: 4 });
-      let convId = createConversation(fakeTitle, newMsg);
+      const convId = createConversation(fakeTitle, newMsg);
       setCurrentId(convId);
     } else {
       addMessage(currentId, newMsg);
@@ -57,7 +88,7 @@ export const ChatInput = ({ onUserMessageSent }: ChatInputProps) => {
 
     setMessage("");
     setImages([]);
-
+    setFormError(null);
     onUserMessageSent?.(useChatStore.getState().currentId);
   };
 
@@ -105,6 +136,10 @@ export const ChatInput = ({ onUserMessageSent }: ChatInputProps) => {
           />
         </div>
 
+        {formError && (
+          <p className="text-red-600 text-sm mb-2 font-semibold">{formError}</p>
+        )}
+
         <div className="flex items-center justify-between">
           <div>
             <button
@@ -125,14 +160,25 @@ export const ChatInput = ({ onUserMessageSent }: ChatInputProps) => {
             />
           </div>
 
-          {showSendButton && (
+          {isAiTyping ? (
             <button
-              type="submit"
-              className="p-2 rounded-full bg-gray-200 text-black hover:bg-gray-300 transition"
-              aria-label="Send"
+              type="button"
+              onClick={onStop}
+              className="p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition"
+              aria-label="Stop"
             >
-              <Send />
+              <Stop />
             </button>
+          ) : (
+            showSendButton && (
+              <button
+                type="submit"
+                className="p-2 rounded-full bg-gray-200 text-black hover:bg-gray-300 transition"
+                aria-label="Send"
+              >
+                <Send />
+              </button>
+            )
           )}
         </div>
       </form>
