@@ -36,6 +36,7 @@ export const ChatScreen = () => {
         id: Date.now().toString(),
         role: "assistant" as const,
         text: aiText,
+        timeStamp: new Date().toLocaleString(),
       };
 
       addMessage(convId, aiMessage);

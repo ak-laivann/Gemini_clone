@@ -83,6 +83,7 @@ export const Sidebar = () => {
                 id: Date.now().toString(),
                 role: "user" as const,
                 text: "",
+                timeStamp: "",
               };
               const fakeTitle = "New Chat";
               createConversation(fakeTitle, newMessage);

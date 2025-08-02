@@ -3,6 +3,7 @@ import { GeminiIcon } from "../../assets/GeminiIcon";
 export interface Message {
   id: string;
   role: "user" | "assistant";
+  timeStamp: string;
   text?: string;
   images?: string[];
 }
@@ -41,6 +42,9 @@ export const MessageBubble = ({ message }: { message: Message }) => {
               />
             ))}
         </div>
+        {message.timeStamp && (
+          <p className={"text-xs text-black mt-1"}>{message.timeStamp}</p>
+        )}
       </div>
     </div>
   );

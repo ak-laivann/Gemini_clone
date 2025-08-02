@@ -9,6 +9,7 @@ import { Message } from "../MessageBubble";
 import { set, z } from "zod";
 import { toast } from "react-toastify";
 import { Skeleton } from "antd";
+import { timeStamp } from "console";
 
 type ChatInputProps = {
   onUserMessageSent?: (id: string | null) => void;
@@ -91,6 +92,7 @@ export const ChatInput = ({
         images.length > 0
           ? images.map((i) => URL.createObjectURL(i))
           : undefined,
+      timeStamp: new Date().toLocaleString(),
     };
 
     if (!currentId) {
