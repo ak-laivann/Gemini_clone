@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { GeminiIcon } from "../../assets/GeminiIcon";
 import { useChatStore } from "../../store/chatStore";
 import { MessageBubble } from "../MessageBubble";
@@ -14,6 +15,12 @@ export const ChatDisplay = ({
     (conv) => conv.id === currentId
   );
   const messages = currentConversation?.messages || [];
+
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages.length, isThinking, currentId]);
 
   return (
     <div className="flex flex-col space-y-4">
@@ -38,6 +45,8 @@ export const ChatDisplay = ({
           </div>
         </div>
       )}
+
+      <div style={{ margin: 0, padding: 0 }} ref={bottomRef} />
     </div>
   );
 };
