@@ -1,0 +1,32 @@
+/* sidebar.css */
+.btn-icon {
+  @apply w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-200 transition;
+}
+
+.btn-rounded {
+  @apply flex items-center gap-2 w-full px-3 py-2 rounded-full hover:bg-gray-200 transition;
+}
+
+.btn-new-chat {
+  @apply flex items-center gap-2 w-full px-3 py-2 text-sm rounded-md transition;
+}
+
+.sidebar-container {
+  @apply pr-2 pl-2 bg-gemini-bg-light border-r h-screen flex flex-col transition-all duration-1000;
+}
+
+.section-heading {
+  @apply text-gray-500 text-xs font-semibold uppercase px-4;
+}
+
+.list-item {
+  @apply flex items-center justify-between px-4 py-2 rounded-full transition cursor-pointer;
+}
+
+.hidden-when-collapsed {
+  @apply text-sm truncate;
+}
+
+.tooltip-content {
+  @apply absolute z-10 hidden group-hover:flex whitespace-nowrap px-2 py-1 text-sm bg-black text-white rounded shadow-md transition-opacity duration-200;
+}
