@@ -72,6 +72,7 @@ export const AuthScreen = () => {
       signUp(fullNumber);
     } else {
       toast.error("Invalid OTP. Please try again.");
+      toast.dark("The otp code is 1234");
     }
     setLoading(false);
   };
