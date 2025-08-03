@@ -6,10 +6,9 @@ import InsertPhotoOutlined from "@mui/icons-material/InsertPhotoOutlined";
 import Send from "@mui/icons-material/Send";
 import Stop from "@mui/icons-material/StopCircleOutlined";
 import { Message } from "../MessageBubble";
-import { set, z } from "zod";
+import { z } from "zod";
 import { toast } from "react-toastify";
 import { Skeleton } from "antd";
-import { timeStamp } from "console";
 
 type ChatInputProps = {
   onUserMessageSent?: (id: string | null) => void;
@@ -71,7 +70,18 @@ export const ChatInput = ({
     }, 3000);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  // this function converts a file to a base64 string. this is basically x+a-a to obtain x. we create a file on upload and then convert it to base64 to be used in local storage
+  // and when procured from local storage, we display the image using src attribute
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const validation = messageSchema.safeParse({
@@ -84,14 +94,15 @@ export const ChatInput = ({
       return;
     }
 
+    const base64Images = await Promise.all(
+      images.map((img) => convertFileToBase64(img))
+    );
+
     const newMsg: Message = {
       id: Date.now().toString(),
       role: "user",
       text: message.trim() || undefined,
-      images:
-        images.length > 0
-          ? images.map((i) => URL.createObjectURL(i))
-          : undefined,
+      images: base64Images,
       timeStamp: new Date().toLocaleString(),
     };
 

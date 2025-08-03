@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { Message } from "../components/MessageBubble";
 
@@ -18,54 +19,60 @@ interface ChatStore {
   setCurrentId: (id: string) => void;
 }
 
-export const useChatStore = create<ChatStore>((set, get) => ({
-  conversations: [],
-  currentId: null,
+export const useChatStore = create(
+  persist<ChatStore>(
+    (set, get) => ({
+      conversations: [],
+      currentId: null,
 
-  createConversation: (title, firstMessage) => {
-    const id = uuidv4();
-    const newConv = {
-      id,
-      title,
-      messages: [firstMessage],
-    };
-    set((state) => ({
-      conversations: [newConv, ...state.conversations],
-      currentId: id,
-    }));
+      createConversation: (title, firstMessage) => {
+        const id = uuidv4();
+        const newConv = {
+          id,
+          title,
+          messages: [firstMessage],
+        };
+        set((state) => ({
+          conversations: [newConv, ...state.conversations],
+          currentId: id,
+        }));
 
-    return id;
-  },
+        return id;
+      },
 
-  addMessage: (conversationId, msg) => {
-    set((state) => ({
-      conversations: state.conversations.map((conv) =>
-        conv.id === conversationId
-          ? { ...conv, messages: [...conv.messages, msg] }
-          : conv
-      ),
-    }));
-  },
+      addMessage: (conversationId, msg) => {
+        set((state) => ({
+          conversations: state.conversations.map((conv) =>
+            conv.id === conversationId
+              ? { ...conv, messages: [...conv.messages, msg] }
+              : conv
+          ),
+        }));
+      },
 
-  updateTitle: (conversationId, newTitle) => {
-    set((state) => ({
-      conversations: state.conversations.map((conv) =>
-        conv.id === conversationId ? { ...conv, title: newTitle } : conv
-      ),
-    }));
-  },
+      updateTitle: (conversationId, newTitle) => {
+        set((state) => ({
+          conversations: state.conversations.map((conv) =>
+            conv.id === conversationId ? { ...conv, title: newTitle } : conv
+          ),
+        }));
+      },
 
-  deleteConversation: (conversationId) => {
-    set((state) => {
-      const updated = state.conversations.filter(
-        (c) => c.id !== conversationId
-      );
-      return {
-        conversations: updated,
-        currentId: state.currentId === conversationId ? null : state.currentId,
-      };
-    });
-  },
+      deleteConversation: (conversationId) => {
+        set((state) => {
+          const updated = state.conversations.filter(
+            (c) => c.id !== conversationId
+          );
+          return {
+            conversations: updated,
+            currentId:
+              state.currentId === conversationId ? null : state.currentId,
+          };
+        });
+      },
 
-  setCurrentId: (id) => set({ currentId: id }),
-}));
+      setCurrentId: (id) => set({ currentId: id }),
+    }),
+    { name: "chat-store", storage: createJSONStorage(() => localStorage) }
+  )
+);

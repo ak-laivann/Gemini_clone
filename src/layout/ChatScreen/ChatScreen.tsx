@@ -44,7 +44,7 @@ export const ChatScreen = () => {
 
       setIsThinking(false);
       timeoutRef.current = null;
-    }, 5000);
+    }, 3000);
   };
 
   const updateTitleIfFirstMessage = (id: string, aiText: string) => {
@@ -54,14 +54,6 @@ export const ChatScreen = () => {
       updateTitle(id, newTitle || "New Conversation");
     }
   };
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [currentId]);
 
   return (
     <div className="flex flex-col flex-1 h-full">
