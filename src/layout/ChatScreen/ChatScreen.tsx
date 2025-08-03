@@ -6,7 +6,7 @@ import { Message } from "../../components/MessageBubble";
 
 const PAGE_SIZE = 20;
 
-export const ChatScreen = () => {
+export const ChatScreen = ({ newChat = false }: { newChat?: boolean }) => {
   const { addMessage, conversations, currentId, updateTitle } = useChatStore();
   const [isThinking, setIsThinking] = useState(false);
   const [isLoadingOlder, setIsLoadingOlder] = useState(false);
@@ -94,7 +94,7 @@ export const ChatScreen = () => {
 
   return (
     <div className="flex flex-col flex-1 h-full">
-      {allMessages.length === 0 ? (
+      {newChat ? (
         <div className="flex-1 flex items-center justify-center px-4 md:px-8">
           <div className="ml-16 w-full max-w-3xl">
             <ChatInput onUserMessageSent={handleAIResponse} />

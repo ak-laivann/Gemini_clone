@@ -5,11 +5,13 @@ import { Form, Input, Button, Spin, Typography, Select } from "antd";
 import { toast } from "react-toastify";
 import "antd/dist/reset.css";
 import { Country } from "country-state-city";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
 export const AuthScreen = () => {
+  const navigate = useNavigate();
   const { isAuthenticated, isSignedUp, signIn, signUp } = useAuthStore();
   const [mobileNumber, setMobileNumber] = useState<string>("");
   const [countryCode, setCountryCode] = useState<string>("+91");
@@ -47,7 +49,11 @@ export const AuthScreen = () => {
     const fullNumber = `${countryCode}-${mobileNumber}`;
 
     if (isSignedUp) {
-      signIn(fullNumber);
+      signIn(fullNumber)
+        .then(() => {
+          navigate("/app");
+        })
+        .catch((err) => toast.error(err.message));
     } else {
       setShowOtp(true);
       toast.info("OTP sent to your mobile number.");
@@ -69,7 +75,11 @@ export const AuthScreen = () => {
     const fullNumber = `${countryCode}-${mobileNumber}`;
 
     if (otp === "1234") {
-      signUp(fullNumber);
+      signUp(fullNumber)
+        .then(() => {
+          navigate("/app");
+        })
+        .catch((err) => toast.error(err.message));
     } else {
       toast.error("Invalid OTP. Please try again.");
       toast.dark("The otp code is 1234");

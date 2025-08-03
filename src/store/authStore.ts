@@ -6,9 +6,9 @@ interface AuthState {
   isAuthenticated: boolean;
   mobileNumber: string | null;
   isSignedUp: boolean;
-  signIn: (mobileNumber: string) => void;
-  signUp: (mobileNumber: string) => void;
-  signOut: () => void;
+  signIn: (mobileNumber: string) => Promise<void>;
+  signUp: (mobileNumber: string) => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 export const useAuthStore = create(
@@ -19,30 +19,40 @@ export const useAuthStore = create(
       isSignedUp: false,
 
       signIn: (mobileNumber) => {
-        const state = get();
-        if (state.isSignedUp) {
-          set({ isAuthenticated: true, mobileNumber });
-          toast.success("Successfully signed in!");
-        } else {
-          toast.error("User not found. Please sign up.");
-        }
+        return new Promise<void>((resolve, reject) => {
+          const state = get();
+          if (state.isSignedUp) {
+            set({ isAuthenticated: true, mobileNumber });
+            toast.success("Successfully signed in!");
+            resolve();
+          } else {
+            toast.error("User not found. Please sign up.");
+            reject(new Error("User not found."));
+          }
+        });
       },
 
       signUp: (mobileNumber) => {
-        set({
-          isAuthenticated: true,
-          mobileNumber,
-          isSignedUp: true,
+        return new Promise<void>((resolve) => {
+          set({
+            isAuthenticated: true,
+            mobileNumber,
+            isSignedUp: true,
+          });
+          toast.success("Signup successful! You are now logged in.");
+          resolve();
         });
-        toast.success("Signup successful! You are now logged in.");
       },
 
       signOut: () => {
-        set({
-          isAuthenticated: false,
-          mobileNumber: null,
+        return new Promise<void>((resolve) => {
+          set({
+            isAuthenticated: false,
+            mobileNumber: null,
+          });
+          toast.info("Logged out successfully.");
+          resolve();
         });
-        toast.info("Logged out successfully.");
       },
     }),
     {

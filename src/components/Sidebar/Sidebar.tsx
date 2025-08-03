@@ -7,8 +7,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useChatStore } from "../../store/chatStore";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const Sidebar = () => {
+  const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isPinned, setIsPinned] = useState(false);
   const [openMenuIndex, setOpenMenuIndex] = useState<string | null>(null);
@@ -104,7 +106,10 @@ export const Sidebar = () => {
                 className={`group list-item relative ${
                   currentId === conv.id ? "bg-[#d3e3fd]" : "hover:bg-gray-200"
                 }`}
-                onClick={() => setCurrentId(conv.id)}
+                onClick={() => {
+                  setCurrentId(conv.id);
+                  navigate(`/app/${currentId}`);
+                }}
               >
                 {editingId === conv.id ? (
                   <input
