@@ -1,13 +1,14 @@
-import "./Sidebar.css";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import Search from "@mui/icons-material/Search";
+import "./Sidebar.css";
 import { useChatStore } from "../../store/chatStore";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 export const Sidebar = () => {
   const navigate = useNavigate();
@@ -23,7 +24,6 @@ export const Sidebar = () => {
     updateTitle,
     currentId,
     setCurrentId,
-    createConversation,
   } = useChatStore();
 
   const handleMouseEnter = () => {
@@ -73,6 +73,17 @@ export const Sidebar = () => {
             <MenuIcon fontSize="small" />
           </button>
         </Tooltip>
+        {isExpanded && (
+          <Tooltip text={"Search"} position="right">
+            <button
+              onClick={() => navigate("/app/search")}
+              className="btn-icon"
+              aria-label={"Search"}
+            >
+              <Search fontSize="small" />
+            </button>
+          </Tooltip>
+        )}
       </div>
 
       <div className="p-2">
@@ -81,14 +92,8 @@ export const Sidebar = () => {
             className="btn-new-chat"
             aria-label="New Chat"
             onClick={() => {
-              const newMessage = {
-                id: Date.now().toString(),
-                role: "user" as const,
-                text: "",
-                timeStamp: "",
-              };
-              const fakeTitle = "New Chat";
-              createConversation(fakeTitle, newMessage);
+              setCurrentId(null);
+              navigate("/app");
             }}
           >
             <EditSquareIcon />
@@ -108,7 +113,7 @@ export const Sidebar = () => {
                 }`}
                 onClick={() => {
                   setCurrentId(conv.id);
-                  navigate(`/app/${currentId}`);
+                  navigate(`/app/${conv.id}`);
                 }}
               >
                 {editingId === conv.id ? (

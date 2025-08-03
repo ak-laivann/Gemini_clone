@@ -1,6 +1,6 @@
 import { Route, Routes, Outlet, Navigate } from "react-router-dom";
 import { ChatScreen } from "../layout";
-import { Header, Sidebar } from "../components";
+import { Header, Sidebar, SearchScreen } from "../components";
 
 const MainLayout = () => {
   return (
@@ -21,9 +21,10 @@ export const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<MainLayout />}>
+        <Route index element={<Navigate to="/app" replace />} />
         <Route path="app" element={<ChatScreen newChat={true} />} />
         <Route path="app/:id" element={<ChatScreen newChat={false} />} />
-        <Route index element={<Navigate to="/app" replace />} />
+        <Route path="app/search" element={<SearchScreen />} />
         <Route path="*" element={<Navigate to="/app" replace />} />
       </Route>
     </Routes>

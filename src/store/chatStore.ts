@@ -17,7 +17,7 @@ interface ChatStore {
   addMessage: (conversationId: string, msg: Message) => void;
   updateTitle: (conversationId: string, newTitle: string) => void;
   deleteConversation: (conversationId: string) => void;
-  setCurrentId: (id: string) => void;
+  setCurrentId: (id: string | null) => void;
 }
 
 const mockConversation = generateMockConversation();

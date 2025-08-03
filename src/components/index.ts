@@ -3,3 +3,4 @@ export * from "./ChatInput";
 export * from "./MessageBubble";
 export * from "./Sidebar";
 export * from "./Header";
+export * from "./SearchComponent";
