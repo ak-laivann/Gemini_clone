@@ -20,6 +20,7 @@
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "antd": "^5.26.7",
+    "country-state-city": "^3.2.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.62.0",

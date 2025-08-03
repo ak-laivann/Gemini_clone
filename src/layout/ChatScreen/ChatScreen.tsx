@@ -66,7 +66,7 @@ export const ChatScreen = () => {
       ) : (
         <>
           <div className="flex-1 overflow-y-auto pb-4">
-            <div className="w-full max-w-3xl mx-auto px-4 md:px-8 py-4">
+            <div className="w-full mb-12 max-w-3xl mx-auto px-4 md:px-8 py-4">
               <ChatDisplay isThinking={isThinking} />
             </div>
           </div>

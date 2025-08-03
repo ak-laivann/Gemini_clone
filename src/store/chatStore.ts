@@ -73,6 +73,9 @@ export const useChatStore = create(
 
       setCurrentId: (id) => set({ currentId: id }),
     }),
-    { name: "chat-store", storage: createJSONStorage(() => localStorage) }
+    {
+      name: "gemini-clone-chat-store",
+      storage: createJSONStorage(() => localStorage),
+    }
   )
 );
