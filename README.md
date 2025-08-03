@@ -3,7 +3,37 @@
 This app is a clone of [Google Gemini AI](https://www.gemini.google.com).
 This app is just made to simulate the gemini app and doesn't have any database.
 
-_To Setup and Run:_
+_Live Deployment Link:_ [Gemini AI Clone](https://gemini-clone-jade-alpha.vercel.app/) - Deployed using [Vercel](https://www.vercel.com/)
+
+# _Screenshots:_
+
+- Enter the deployment Link. ![URL Entry](./github/URL.png)
+- Since, I am a new User so app routes to /sign-up. ![New User - Sign Up](./github/Sign-Up%20Page.png)
+- Mobile Number Change with Error Handling. ![Mobile Number Error](./github//MobileNumberError.png)
+- OTP will be sent. ![OTP Sent](./github/OTPSent.png)
+- On invalid otp, error will be shown. ![OTP Error handling](./github/InvalidOTP.png)
+- On successful sign up, rerouted to /app, toast will be shown. ![Successful Sign UP](./github/OnSignUp.png)
+- Normal UI on /app route. ![Home Page](./github/UIAfterSignUp.png)
+- On hovering over sidebar, sidebar gets expanded and the item gets displayed in tooltip. ![Sidebar Hover](./github/SidebarHover.png)
+- On selecting the prefilled chat, user will be rerouted to app/:id and that chat would be displayed. ![Preset data](./github/PrefilledData.png)
+- On scrolling up, infinite scrolling with pagination is implemented. ![Pagination](./github/Pagination.png)
+- On pressing new chat will be rerouted to /app, and on having an image uploaded, skeleton loader will be shown. ![Image upload loader](./github/imageupload.png)
+- On uploading multiple images and after each image upload, toast will be shown, and on hovering over image, one can choose to not send an image. ![Image upload success](./github/imageuploadsuccess.png)
+- On sending the message, AI thinking is simulated, new chat is created in the sidebar with focus on that. ![AI Thinking](./github/AIThinking.png)
+- On clicking the stop button, the AI thinking can be skipped. ![Skipped AI thinking](./github/SkippedAiThinking.png)
+- The text has support for spaces and enters as well. What you type is what you would see. On hovering over a message, you can copy that message to your clipboard. ![Copy](./github/GapsAndCopy.png)
+- On clicking the search icon, reroutes to /app/search. On typing, searching happens ![Searching](./github/Searching.png)
+- On clicking the result, will be rerouted to /app/:id. ![Selected Chat](./github/SelectedChat.png)
+- You can edit or delete the chat title as well ![Chat Options](./github/EditOption.png)
+- On deleting a chat, toast would appear. After editing a title, toast would appear and would be reflected in Sidebar. ![Edit and delete](./github/EditandDelete.png)
+- The chats gets updated after each message ![Chats](./github/Chats.png)
+- On clicking sign out, you will be taken to /sign-in page ![Logged out](./github/Logout.png)
+- And this time, you dont need to sign up with otp, you can just sign in with the number ![Signed In](./github/SignedIn.png)
+- to go over this flow again, you need to manually delete them through browser console since localstorage doesnt expire.
+- This is how you can view and delete the localstorage. Dont worry. your other tabs are not sharing local storage with this app and domain. you can go ahead and clear them. To open Developer's console press `Ctrl`+ `Shift`+ `I`. ![Local Storage deletion](./github/localstoragedeletion.png)
+- if you refresh the page now, you will be rerouted to /sign-up and not /sign-in ![Sign up again](./github/sign-up-again.png)
+
+### _To Setup and Run:_
 
 - You might need to clone this repo and run `npm i`.
 - After the dependencies has been installed you can host them locally using `npm run start`
@@ -12,11 +42,12 @@ _Folder Structure:_
 Just like a normal react-app with typescript everything lies inside _src_ directory.
 
 There are
-[x] assets - includes pictures and icons
-[x] components - includes reusable components
-[x] layouts - where components are assembled to make pages
-[x] store - contains state-management solutions created using [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
-[x] routes - contains routes (using [React Router Dom](https://reactrouter.com/))
+
+- [x] assets - includes pictures and icons
+- [x] components - includes reusable components
+- [x] layouts - where components are assembled to make pages
+- [x] store - contains state-management solutions created using [Zustand](https://zustand.docs.pmnd.rs/getting-started/introduction)
+- [x] routes - contains routes (using [React Router Dom](https://reactrouter.com/))
 
 The props are defined in the component files and are used to structure the data.
 
@@ -25,7 +56,8 @@ _Gemini functionality simulation_
 1. The user needs to sign in to use this (simulated)
    _1.1._ The user might be new. So need to enter the mobile number to get the otp (Simulated)
    _1.2._ The user might have already signed-up. So can enter the mobile number alone and can be signed-in.
-   _`Leveraged AuthStore - created using zustand to achieve this sign-in/sign-up functionality. Could be replaced with JWT if integrating with backend.`_
+
+_`Leveraged AuthStore - created using zustand to achieve this sign-in/sign-up functionality. Could be replaced with JWT if integrating with backend.`_
 
 2. Once logged in, the routes will take the user to `/app`, on which the user might see a input field with support only for picture uploads.
    _2.1._ Only after typing something, or having an image uploaded, can the user send the message.
