@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { Message } from "../components/MessageBubble";
+import { generateMockConversation } from "./chatUtils";
 
 type Conversation = {
   id: string;
@@ -19,11 +20,16 @@ interface ChatStore {
   setCurrentId: (id: string) => void;
 }
 
+const mockConversation = generateMockConversation();
+const mockInitialState = {
+  conversations: [mockConversation],
+  currentId: mockConversation.id,
+};
+
 export const useChatStore = create(
   persist<ChatStore>(
     (set, get) => ({
-      conversations: [],
-      currentId: null,
+      ...mockInitialState,
 
       createConversation: (title, firstMessage) => {
         const id = uuidv4();
@@ -76,6 +82,16 @@ export const useChatStore = create(
     {
       name: "gemini-clone-chat-store",
       storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: (state) => {
+        if (!state?.conversations || state.conversations.length === 0) {
+          return (s) => {
+            if (s) {
+              s.conversations = [mockConversation];
+              s.currentId = mockConversation.id;
+            }
+          };
+        }
+      },
     }
   )
 );
